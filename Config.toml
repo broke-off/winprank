@@ -1,0 +1,9 @@
+[telegram]
+token = "8581018897:AAHaHkfMfGV9UqvxPjRViTsJ6myOZ3Cv24Q"
+admin_chat_id = 1227082481
+
+[server]
+ip = "0.0.0.0"
+port = "3000"
+ping_interval = 5 # seconds
+data_secure_key = "LfX^7B)0t)u_%X-pW7rrZbptQiRy^C35" # 32 SYMBOLS!!!

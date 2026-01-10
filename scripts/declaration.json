@@ -1,0 +1,32 @@
+{
+  "disco": {
+    "name": "Диско режим кнопок",
+    "description": "Включает и выключает кнопки Capslock, Numlock, Scrolllock",
+    "self-terminate": false
+  },
+  "t_m": {
+    "name": "Синдром турето для мыши",
+    "description":  "Дергает мышь",
+    "self-terminate": false
+  },
+  "m_off": {
+    "name": "Выкл. монитор",
+    "description": "Выключает монитор",
+    "self-terminate": true
+  },
+  "m_on": {
+    "name": "Вкл. монитор",
+    "description": "Включает монитор",
+    "self-terminate": true
+  },
+  "mo_en": {
+    "name": "Вкл. мышку",
+    "description": "Включает мышку",
+    "self-terminate": true
+  },
+  "mo_dis": {
+    "name": "Выкл. мышку",
+    "description": "Выключает мышку",
+    "self-terminate": true
+  }
+}
