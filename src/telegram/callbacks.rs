@@ -14,6 +14,7 @@ pub mod callbacks {
     use crate::telegram::dialogs::change_wallpaper::change_wallpaper::{ChangeWallpaper, ChangeWallpaperDialogue, ChangeWallpaperState};
     use crate::telegram::dialogs::send_notify_dialog::notify_dialog::{NotificationData, NotificationEditorDialogue, NotificationEditorState};
     use crate::telegram::ui::ui::{show_audio_ui, show_client_menu, show_notification_editor, show_scripts, show_send_change_wallpaper, show_send_cursor};
+    use rust_i18n::t;
 
     pub async fn get_client_by_id(id: String, state: Arc<Mutex<AppState>>) -> RPTClient{
         let state = state.lock().await;
@@ -37,10 +38,10 @@ pub mod callbacks {
             }
 
             if clients_button.inline_keyboard.len() == 0 { clients_button.inline_keyboard.push(line.clone()); }
-            let _ = bot.edit_message_text(chat_id, message, format!("Клиенты в сети (всего: {})", state.clients.len())).parse_mode(ParseMode::Html).await;
+            let _ = bot.edit_message_text(chat_id, message, t!("menu.show_clients.1", "total" => state.clients.len())).parse_mode(ParseMode::Html).await;
             let _ = bot.edit_message_reply_markup(chat_id, message).reply_markup(clients_button).await;
         } else {
-            let _ = bot.edit_message_text(chat_id, message, "Сейчас нету клиентов в сети").await;
+            let _ = bot.edit_message_text(chat_id, message, t!("menu.show_clients.2")).await;
         }
     }
 
@@ -178,7 +179,7 @@ pub mod callbacks {
                     client_1.runned_scripts.push(script_id.to_string());
                 }
 
-                bot.answer_callback_query(q.id).show_alert(true).text("Скрипт успешно запущен!").await?;
+                bot.answer_callback_query(q.id).show_alert(true).text(t!("alert.scripts_was_launched")).await?;
             }
             // Play Audio Button
             else if data.starts_with("audio|") {
@@ -213,7 +214,7 @@ pub mod callbacks {
                     flags: vec![],
                 };
                 client.channel.unwrap().send(command).await.expect("Failed to send command");
-                bot.answer_callback_query(q.id).show_alert(true).text("Звук воспроизводится!").await?;
+                bot.answer_callback_query(q.id).show_alert(true).text(t!("alert.sound_was_played")).await?;
             }
         }
         Ok(())
@@ -257,7 +258,7 @@ pub mod callbacks {
                 // sending to client channel
                 client.channel.unwrap().send(command).await.unwrap();
 
-                bot.answer_callback_query(q.id).show_alert(true).text("Сообщение отправлено!").await?;
+                bot.answer_callback_query(q.id).show_alert(true).text(t!("alert.message_send")).await?;
             }
         }
         Ok(())
@@ -279,7 +280,7 @@ pub mod callbacks {
                     open_client(&bot, client.id, state, &q).await;
                     dialogue.exit().await.expect("Failed to exit dialogue");
 
-                    bot.answer_callback_query(q.id.clone()).show_alert(true).text("Курсор был изменён!").await?;
+                    bot.answer_callback_query(q.id.clone()).show_alert(true).text(t!("alert.cursor_was_modified")).await?;
                 }
             }
             else if data == "exit" {
@@ -297,7 +298,7 @@ pub mod callbacks {
                 open_client(&bot, client.id, state, &q).await;
                 dialogue.exit().await.expect("Failed to exit dialogue");
 
-                bot.answer_callback_query(q.id.clone()).show_alert(true).text("Курсор был изменён!").await?;
+                bot.answer_callback_query(q.id.clone()).show_alert(true).text(t!("alert.cursor_was_modified")).await?;
             }
             else if data == "set_min" {
                 let command = RPTCommand {
@@ -309,7 +310,7 @@ pub mod callbacks {
                 open_client(&bot, client.id, state, &q).await;
                 dialogue.exit().await.expect("Failed to exit dialogue");
 
-                bot.answer_callback_query(q.id.clone()).show_alert(true).text("Курсор был изменён!").await?;
+                bot.answer_callback_query(q.id.clone()).show_alert(true).text(t!("alert.cursor_was_modified")).await?;
             }
             else if data == "reset" {
                 let command = RPTCommand {
@@ -320,7 +321,7 @@ pub mod callbacks {
                 client.channel.unwrap().send(command).await.unwrap();
                 dialogue.exit().await.expect("Failed to exit dialogue");
                 open_client(&bot, client.id, state, &q).await;
-                bot.answer_callback_query(q.id.clone()).show_alert(true).text("Курсор был сброшен по умолчанию").await?;
+                bot.answer_callback_query(q.id.clone()).show_alert(true).text(t!("alert.cursor_was_reset")).await?;
             }
         }
         Ok(())
@@ -339,7 +340,7 @@ pub mod callbacks {
                     };
                     client.clone().channel.unwrap().send(command).await.unwrap();
                 }
-                bot.answer_callback_query(q.id.clone()).show_alert(true).text("Обои изменены!").await?;
+                bot.answer_callback_query(q.id.clone()).show_alert(true).text(t!("alert.wallpapers_changed")).await?;
                 open_client(&bot, client.id, state, &q).await;
                 dialogue.exit().await.expect("Failed to exit dialogue");
             } else if data == "cancel" {

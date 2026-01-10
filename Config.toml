@@ -1,6 +1,7 @@
 [telegram]
-token = "8581018897:AAHaHkfMfGV9UqvxPjRViTsJ6myOZ3Cv24Q"
-admin_chat_id = 1227082481
+token = "YOUR_TOKEN"
+admin_chat_id = 1227082481 #  type /myid in your bot to get you chat id
+lang="eng" # rus/eng
 
 [server]
 ip = "0.0.0.0"

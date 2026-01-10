@@ -20,6 +20,8 @@ pub mod websockets {
     use crate::core::command::command::RPTCommand;
     use crate::core::utils::utils::encrypt_data;
 
+    use rust_i18n::t;
+
     pub async fn handler(ws: WebSocketUpgrade, ConnectInfo(addr): ConnectInfo<SocketAddr>, State(app_state): State<Arc<Mutex<AppState>>>, header_map: HeaderMap) -> Response {
         ws.on_upgrade(move |socket| handle_socket(socket, addr, app_state, header_map))
     }
@@ -36,7 +38,7 @@ pub mod websockets {
         let (tx, mut rx) = mpsc::channel::<RPTCommand>(10);
         {
             let mut state = state.lock().await;
-            let _ = state.bot.send_message(ChatId(state.config.telegram.admin_chat_id), format!("🚨 Новый пользователь подключен ({})", data.ip)).await;
+            let _ = state.bot.send_message(ChatId(state.config.telegram.admin_chat_id), t!("client.connected", "client" => data.ip)).await;
             let mut client = RPTClient::new(data.clone());
             client.channel = Some(tx);
             state.clients.push(client);
@@ -107,7 +109,7 @@ pub mod websockets {
             }
             let _ = state.bot.send_message(
                 ChatId(state.config.telegram.admin_chat_id),
-                format!("🚨 Пользователь ({}) отключен от сети", who.ip())
+                t!("client.disconnected", "client" => data.ip)
             ).await;
         }
         info!("User disconnected from network: {}", who);

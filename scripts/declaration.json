@@ -1,32 +1,32 @@
 {
   "disco": {
-    "name": "Диско режим кнопок",
-    "description": "Включает и выключает кнопки Capslock, Numlock, Scrolllock",
+    "name": "Keyboard Disco",
+    "description": "Toggles CapsLock, NumLock, and ScrollLock LEDs repeatedly",
     "self-terminate": false
   },
   "t_m": {
-    "name": "Синдром турето для мыши",
-    "description":  "Дергает мышь",
+    "name": "Mouse Tourette's",
+    "description": "Causes the mouse cursor to twitch and shake randomly",
     "self-terminate": false
   },
   "m_off": {
-    "name": "Выкл. монитор",
-    "description": "Выключает монитор",
+    "name": "Monitor OFF",
+    "description": "Turns off the monitor",
     "self-terminate": true
   },
   "m_on": {
-    "name": "Вкл. монитор",
-    "description": "Включает монитор",
+    "name": "Monitor ON",
+    "description": "Turns on the monitor",
     "self-terminate": true
   },
   "mo_en": {
-    "name": "Вкл. мышку",
-    "description": "Включает мышку",
+    "name": "Enable Mouse",
+    "description": "Restores mouse control to the user",
     "self-terminate": true
   },
   "mo_dis": {
-    "name": "Выкл. мышку",
-    "description": "Выключает мышку",
+    "name": "Disable Mouse",
+    "description": "Completely blocks mouse movement and input",
     "self-terminate": true
   }
 }

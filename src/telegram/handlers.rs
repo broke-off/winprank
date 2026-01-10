@@ -9,6 +9,8 @@ pub mod handlers {
     use crate::app::app::AppState;
     use crate::telegram::commands::telegram_commands::Command;
 
+    use rust_i18n::t;
+
     async fn get_system_status() -> String {
         let mut sys = System::new_all();
         sys.refresh_all();
@@ -35,17 +37,7 @@ pub mod handlers {
                 let online_clients = state.clients.len();
                 let loaded_scripts = state.scripts.unwrap_or_default().len();
 
-                let hello_text = format!(
-                    "─── *☢️WinPrankRPT Server Panel☢️* ───\n\
-                    🟢 Статус сервера: `Онлайн` \n\
-                    💻 Клиенты в сети: {online_clients} \n\
-                    📜 Загруженные скрипты: {loaded_scripts} \n\
-                    🚀 Версия: `1\\.0\\.0` \n\n\
-                    🖥 *Статус Системы*\n\
-                    {stats}\n\n\
-                    _Доступные команды:_\n\
-                    ───────────────────────────"
-                );
+                let hello_text = t!("menu.server", "stats"=> stats, "online_clients" => online_clients, "loaded_scripts" => loaded_scripts, "version"=>env!("CARGO_PKG_VERSION")).to_string();
 
                 bot.send_message(msg.chat.id, hello_text)
                     .parse_mode(ParseMode::MarkdownV2)
@@ -53,10 +45,10 @@ pub mod handlers {
             },
             Command::Start => {
                 if msg.chat.id.0 != state.config.telegram.admin_chat_id {
-                    bot.send_message(msg.chat.id, "Вы не админ! Проверьте Config.toml").await?;
+                    bot.send_message(msg.chat.id, t!("client.you_are_not_admin")).await?;
                     return Ok(())
                 }
-                bot.send_message(msg.chat.id, "Бот запущен. Жми /info").await?;
+                bot.send_message(msg.chat.id, t!("client.start_message")).await?;
             },
             Command::GetOnlineClients => {
                 if msg.chat.id.0 != state.config.telegram.admin_chat_id {return Ok(())}
@@ -74,9 +66,9 @@ pub mod handlers {
                     }
 
                     if clients_button.inline_keyboard.len() == 0 { clients_button.inline_keyboard.push(line.clone()); }
-                    bot.send_message(msg.chat.id, format!("Клиенты в сети (всего: {})", state.clients.len())).reply_markup(clients_button).parse_mode(ParseMode::Html).await?;
+                    bot.send_message(msg.chat.id, t!("menu.show_clients.1", "total" => state.clients.len())).reply_markup(clients_button).parse_mode(ParseMode::Html).await?;
                 } else {
-                    bot.send_message(msg.chat.id, "Сейчас нету клиентов в сети").await?;
+                    bot.send_message(msg.chat.id, t!("menu.show_clients.2")).await?;
                 }
             }
             Command::MyId => {

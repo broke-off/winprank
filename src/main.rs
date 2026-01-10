@@ -48,6 +48,11 @@ use crate::telegram::dialogs::change_wallpaper::change_wallpaper::{wait_for_wall
 use crate::telegram::dialogs::send_notify_dialog::notify_dialog::{notify_editor_body, notify_editor_title, NotificationEditorState};
 use crate::telegram::handlers::handlers::answer;
 
+#[macro_use]
+pub extern crate rust_i18n;
+
+i18n!("locales");
+
 #[tokio::main]
 async fn main() {
     let preview_hello = r#"
@@ -57,7 +62,7 @@ async fn main() {
 #    | |/ |/ / / / / / ____/ /  / /_/ / / / / ,<
 #    |__/|__/_/_/ /_/_/   /_/   \__,_/_/ /_/_/|_|
 #
-#    by broke_off
+#    by broke_off (https://github.com/broke-off/winprank)
 "#;
 
     // Init Logger
@@ -98,6 +103,8 @@ async fn main() {
         .branch(message_handler)
         .branch(callbacks_handler);
 
+    rust_i18n::set_locale(&*config.telegram.lang);
+    info!("Selected telegram bot language: {}", config.telegram.lang.to_uppercase());
     info!("Telegram bot initialized");
 
     // Creating App State

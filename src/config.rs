@@ -19,5 +19,6 @@ pub mod config {
     pub struct TelegramBotPanel {
         pub token: String,
         pub admin_chat_id: i64,
+        pub lang: String,
     }
 }
