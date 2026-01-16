@@ -1,12 +1,25 @@
 mod telegram {
     pub(crate) mod commands;
     pub(crate) mod handlers;
-    pub(crate) mod callbacks;
     pub mod dialogs {
         pub(crate) mod send_notify_dialog;
         pub(crate) mod change_wallpaper;
         pub(crate) mod change_cursor;
     }
+    pub mod callbacks {
+        pub(crate) mod utils;
+        pub(crate) mod open_client;
+        pub(crate) mod dialogs;
+        pub(crate) mod notification;
+        pub(crate) mod scripts;
+        pub(crate) mod audio;
+        pub(crate) mod control_pc;
+
+        // one of main callbacks
+        pub(crate) mod wallpaper;
+        pub(crate) mod cursor;
+    }
+    pub mod callbacks_router;
     pub mod ui;
 }
 
@@ -25,7 +38,7 @@ mod app;
 use std::fs;
 use std::net::SocketAddr;
 use std::sync::Arc;
-use tokio::sync::{broadcast, Mutex};
+use tokio::sync::{Mutex};
 use axum::Router;
 use axum::routing::{any, get};
 use log::{error, info, LevelFilter};
@@ -33,7 +46,7 @@ use teloxide::{dptree, Bot};
 use teloxide::dispatching::{HandlerExt, UpdateFilterExt};
 use teloxide::dispatching::dialogue::InMemStorage;
 use teloxide::dptree::case;
-use teloxide::prelude::{Dispatcher, Message, Requester, Update};
+use teloxide::prelude::{Dispatcher, Requester, Update};
 use teloxide::utils::command::BotCommands;
 use tokio::net::TcpListener;
 use crate::app::app::{AppState};
@@ -41,7 +54,10 @@ use crate::app::app::{AppState};
 // In crate
 use crate::config::config::Config;
 use crate::core::ws::websockets::handler;
-use crate::telegram::callbacks::callbacks::{change_cursor_callbacks, change_wallpaper_callbacks, clients_buttons_callback_handler, notify_editor_callbacks};
+use crate::telegram::callbacks::cursor::change_cursor_callbacks;
+use crate::telegram::callbacks::notification::notify_editor_callbacks;
+use crate::telegram::callbacks::wallpaper::change_wallpaper_callbacks;
+use crate::telegram::callbacks_router::router::callbacks::clients_buttons_callback_handler;
 use crate::telegram::commands::telegram_commands::Command;
 use crate::telegram::dialogs::change_cursor::change_cursor::{wait_for_cursor, ChangeCursorState};
 use crate::telegram::dialogs::change_wallpaper::change_wallpaper::{wait_for_wallpaper, ChangeWallpaperState};

@@ -11,6 +11,7 @@ pub mod commands {
         Shutdown,
         ChangeWallpaper,
         ChangeCursor,
+        ChangeAudioVolume,
         WinMessage
     }
 

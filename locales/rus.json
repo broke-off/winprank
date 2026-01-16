@@ -12,7 +12,12 @@
   "button.change_text": "✏️ Текст",
   "button.change_cursor_to_min": "🔅 Размер 1",
   "button.change_cursor_to_max": "🔆 Размер 15",
+  "button.control_pc": "⚙️ Управление ПК",
+  "button.off_tskmngr": "📛 Выключить Диспетчер задач",
   "button.reset_cursor": "🔄 Сбросить курсор",
+  "button.set_volume_min": "🔉 Уменьшить громкость",
+  "button.set_volume_max": "🔊 Увеличить громкость",
+  "button.shutdown_pc": "💀 Выключить ПК",
   "client.info": "🧟 <b>Клиент</b>\n\n💻 <b>Имя ПК:</b> %{pc}\n🌐 <b>IP:</b> %{ip}\n🪟 <b>ОС:</b> Windows %{win}\n🗺️ <b>Страна:</b> %{country}\n📜 <b>Запущено скриптов:</b> %{runned_scripts}\n⏳ <b>В сети с:</b> %{time}",
   "client.disconnected": "🚨 клиент (%{client}) отключился",
   "client.connected": "🚨 Новый клиент подключен (%{client})",
@@ -26,10 +31,12 @@
   "menu.show_clients.1": "Клиенты в сети (всего: %{total})",
   "menu.show_clients.2": "В сети нет активных клиентов",
   "menu.server": "─── *☢️ WinPrankRPT Панель Сервера ☢️* ───\n🟢 Статус: `Онлайн` \n💻 Клиентов в сети: %{online_clients} \n📜 Загружено скриптов: %{loaded_scripts} \n🚀 Версия: `%{version}` \n\n🖥️ *Статус системы*\n %{stats}\n───────────────────────────",
+  "menu.pc_control_menu": "⚙️ Управление ПК",
   "alert.message_send": "Сообщение отправлено!",
   "alert.cursor_was_modified": "Курсор изменен!",
   "alert.cursor_was_reset": "Курсор сброшен!",
   "alert.wallpapers_changed": "Обои изменены!",
   "alert.scripts_was_launched": "Скрипт успешно запущен!",
-  "alert.sound_was_played": "Звук воспроизведен!"
+  "alert.sound_was_played": "Звук воспроизведен!",
+  "alert.default": "Изменения были отправлены!"
 }

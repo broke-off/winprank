@@ -41,7 +41,7 @@ pub mod notify_dialog {
             };
             bot.delete_message(msg.chat.id, msg.id).await?;
 
-            let replace = show_notification_editor(new_data.id.clone(), Some(new_data.clone()));
+            let replace = show_notification_editor(Some(new_data.clone()));
 
             bot.edit_message_text(msg.chat.id, message_id, replace.0).parse_mode(ParseMode::Html).await?;
             bot.edit_message_reply_markup(msg.chat.id, message_id).reply_markup(replace.1.unwrap()).await?;
@@ -59,7 +59,7 @@ pub mod notify_dialog {
             };
             bot.delete_message(msg.chat.id, msg.id).await?;
 
-            let replace = show_notification_editor(new_data.id.clone(), Some(new_data.clone()));
+            let replace = show_notification_editor(Some(new_data.clone()));
 
             bot.edit_message_text(msg.chat.id, message_id, replace.0).parse_mode(ParseMode::Html).await?;
             bot.edit_message_reply_markup(msg.chat.id, message_id).reply_markup(replace.1.unwrap()).await?;
