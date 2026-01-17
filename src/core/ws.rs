@@ -103,7 +103,7 @@ pub mod websockets {
         {
             let mut state = state.lock().await;
 
-            let index = state.clients.iter().position(|x| x.address == who.ip().to_string());
+            let index = state.clients.iter().position(|x| x.address == data.ip);
             if let Some(index) = index {
                 state.clients.remove(index);
             }
