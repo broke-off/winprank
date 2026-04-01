@@ -50,7 +50,7 @@
 > Client
 > 1. Install Rust lang (```https://rust-lang.org/tools/install/```)
 > 2. Download client winprank repo (```https://github.com/broke-off/winprank/tree/client#```)
-> 3. You need buy your own VPS and install and open public address (`https://github.com/fatedier/frp` or `https://github.com/jpillora/chisel` or another tunnel)
+> 3. You need buy your own VPS and install and open public address (`https://github.com/fatedier/frp` or `https://github.com/jpillora/chisel` or __NGROK__) 
 > 4. Get your public address
 > 5. Open winprank-client/src/config.rs and replace 0.0.0.0:3000 to your public address (without https://)
 > 6. Open terminal and run ``cargo build --release``

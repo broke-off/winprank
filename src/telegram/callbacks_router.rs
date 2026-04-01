@@ -35,7 +35,7 @@ pub mod router {
             if let Some(data) = &request_data.q.data {
                 let (command, _args) = data.split_once('|').unwrap_or((data, ""));
 
-                let result = match command {
+                let _ = match command {
                     "open_client" => crate::telegram::callbacks::open_client::handler::f(&request_data).await,
                     "send_message" => start_notification_dialog(&request_data).await,
                     "change_cursor" => start_cursor_dialog(&request_data).await,

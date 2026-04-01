@@ -14,7 +14,6 @@ serde = { version = "1.0.228", features = ["derive"] }
 axum = { version = "0.8.8", features = ["ws"] }
 toml = "0.9.10+spec-1.1.0"
 sysinfo = "0.37.2"
-aes = "0.7"
 aes-gcm = "0.10"
 serde_json = "1.0.148"
 futures-util = "0.3.31"

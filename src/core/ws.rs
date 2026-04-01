@@ -1,17 +1,15 @@
 pub mod websockets {
     use futures_util::{SinkExt, StreamExt};
-    use std::net::SocketAddr;
     use std::sync::Arc;
     use std::time::Duration;
     use tokio::sync::{mpsc, Mutex};
-    use axum::extract::{ConnectInfo, Query, State, WebSocketUpgrade};
+    use axum::extract::{State, WebSocketUpgrade};
     use axum::extract::ws::{Message, WebSocket};
     use axum::http::HeaderMap;
     use axum::response::Response;
     use base64::Engine;
     use base64::prelude::BASE64_STANDARD;
     use log::{error, info};
-    use serde::Deserialize;
     use teloxide::requests::Requester;
     use teloxide::types::ChatId;
     use tokio::time;
@@ -22,11 +20,11 @@ pub mod websockets {
 
     use rust_i18n::t;
 
-    pub async fn handler(ws: WebSocketUpgrade, ConnectInfo(addr): ConnectInfo<SocketAddr>, State(app_state): State<Arc<Mutex<AppState>>>, header_map: HeaderMap) -> Response {
-        ws.on_upgrade(move |socket| handle_socket(socket, addr, app_state, header_map))
+    pub async fn handler(ws: WebSocketUpgrade, State(app_state): State<Arc<Mutex<AppState>>>, header_map: HeaderMap) -> Response {
+        ws.on_upgrade(move |socket| handle_socket(socket, app_state, header_map))
     }
 
-    async fn handle_socket(socket: WebSocket, who: SocketAddr, state: Arc<Mutex<AppState>>, header_map: HeaderMap) {
+    async fn handle_socket(socket: WebSocket, state: Arc<Mutex<AppState>>, header_map: HeaderMap) {
         let header = header_map.get("X-Client-Info").unwrap().to_str().unwrap();
         let decode = BASE64_STANDARD.decode(header).unwrap_or_default();
         let data: HelloData = serde_json::from_slice(decode.as_slice()).unwrap();
@@ -112,6 +110,6 @@ pub mod websockets {
                 t!("client.disconnected", "client" => data.ip)
             ).await;
         }
-        info!("User disconnected from network: {}", who);
+        info!("User disconnected from network: {}", data.ip);
     }
 }
